@@ -10,7 +10,7 @@ public class AppProperties {
     @Autowired
     private Environment env;
 
-    public String getSecretToken(){
+    public String getSecretToken() {
         return env.getProperty("tokenSecret");
     }
 }
