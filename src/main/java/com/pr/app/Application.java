@@ -24,7 +24,7 @@ public class Application {
     }
 
     @Bean
-    public AppProperties getAppProperties(){
+    public AppProperties getAppProperties() {
         return new AppProperties();
     }
 }
