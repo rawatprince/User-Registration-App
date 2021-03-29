@@ -1,8 +1,10 @@
 package com.pr.app.ui.controller;
 
+import com.pr.app.exceptions.UserServiceException;
 import com.pr.app.service.UserService;
 import com.pr.app.shared.dto.UserDTO;
 import com.pr.app.ui.model.request.UserDetailsRequestModel;
+import com.pr.app.ui.model.response.ErrorMessages;
 import com.pr.app.ui.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +25,7 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(path = "/{id}")
     public UserRest getUserDetails(@PathVariable String id) {
         UserRest userRest = new UserRest();
         UserDTO userDTO = userService.getUserByUserId(id);
@@ -32,9 +33,13 @@ public class UserController {
         return userRest;
     }
 
-    @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
-            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
-    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
+    @PostMapping()
+    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws UserServiceException {
+
+        if (userDetails.getFirstName().isEmpty() || userDetails.getLastName().isEmpty()
+                || userDetails.getEmail().isEmpty() || userDetails.getPassword().isEmpty())
+            throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
+
         UserRest userRest = new UserRest();
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(userDetails, userDTO);
