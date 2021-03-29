@@ -8,7 +8,6 @@ import com.pr.app.ui.model.response.ErrorMessages;
 import com.pr.app.ui.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,9 +47,16 @@ public class UserController {
         return userRest;
     }
 
-    @PutMapping
-    public String updateUser() {
-        return "Updating User";
+    @PutMapping("/{id}")
+    public UserRest updateUser(@RequestBody UserDetailsRequestModel userDetails, @PathVariable String id) {
+
+        UserRest userRest = new UserRest();
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(userDetails, userDTO);
+        UserDTO updateUser = userService.updateUser(id, userDTO);
+        BeanUtils.copyProperties(updateUser, userRest);
+        return userRest;
+
     }
 
     @DeleteMapping

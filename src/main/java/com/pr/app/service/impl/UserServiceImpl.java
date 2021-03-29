@@ -1,10 +1,12 @@
 package com.pr.app.service.impl;
 
+import com.pr.app.exceptions.UserServiceException;
 import com.pr.app.io.entity.UserEntity;
 import com.pr.app.io.repository.UserRepository;
 import com.pr.app.service.UserService;
 import com.pr.app.shared.dto.UserDTO;
 import com.pr.app.shared.utils.Utils;
+import com.pr.app.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -62,6 +64,22 @@ public class UserServiceImpl implements UserService {
         }
         BeanUtils.copyProperties(userEntity, userDTO);
         return userDTO;
+    }
+
+    @Override
+    public UserDTO updateUser(String userId, UserDTO userDTO) {
+
+        UserDTO returnValue = new UserDTO();
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+        userEntity.setFirstName(userDTO.getFirstName());
+        userEntity.setLastName(userDTO.getLastName());
+        UserEntity updatedUserDetails = userRepository.save(userEntity);
+        BeanUtils.copyProperties(updatedUserDetails, returnValue);
+
+        return returnValue;
     }
 
     @Override

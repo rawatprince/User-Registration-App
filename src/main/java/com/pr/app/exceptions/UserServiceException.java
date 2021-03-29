@@ -1,6 +1,6 @@
 package com.pr.app.exceptions;
 
-public class UserServiceException extends RuntimeException{
+public class UserServiceException extends RuntimeException {
 
 
     public UserServiceException(String message) {
