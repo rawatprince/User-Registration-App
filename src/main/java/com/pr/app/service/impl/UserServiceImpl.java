@@ -9,6 +9,9 @@ import com.pr.app.shared.utils.Utils;
 import com.pr.app.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -60,7 +64,7 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = new UserDTO();
         UserEntity userEntity = userRepository.findByUserId(id);
         if (userEntity == null) {
-            throw new UsernameNotFoundException("User with userId "+id+" not found");
+            throw new UsernameNotFoundException("User with userId " + id + " not found");
         }
         BeanUtils.copyProperties(userEntity, userDTO);
         return userDTO;
@@ -91,6 +95,21 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.delete(userEntity);
 
+    }
+
+    @Override
+    public List<UserDTO> getUsers(int page, int limit) {
+        List<UserDTO> returnValue = new ArrayList<>();
+        if (page > 0) page = page - 1;
+        Pageable pageableRequest = PageRequest.of(page, limit);
+        Page<UserEntity> usersPage = userRepository.findAll(pageableRequest);
+        List<UserEntity> content = usersPage.getContent();
+        for (UserEntity userEntity : content) {
+            UserDTO userDTO = new UserDTO();
+            BeanUtils.copyProperties(userEntity, userDTO);
+            returnValue.add(userDTO);
+        }
+        return returnValue;
     }
 
     @Override
