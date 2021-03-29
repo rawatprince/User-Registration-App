@@ -5,6 +5,8 @@ import com.pr.app.service.UserService;
 import com.pr.app.shared.dto.UserDTO;
 import com.pr.app.ui.model.request.UserDetailsRequestModel;
 import com.pr.app.ui.model.response.ErrorMessages;
+import com.pr.app.ui.model.response.OperationStatusModel;
+import com.pr.app.ui.model.response.RequestOperationStatus;
 import com.pr.app.ui.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,9 +61,13 @@ public class UserController {
 
     }
 
-    @DeleteMapping
-    public String deleteUser() {
-        return "Deleting User";
+    @DeleteMapping("/{id}")
+    public OperationStatusModel deleteUser(@PathVariable String id) {
+        OperationStatusModel model = new OperationStatusModel();
+        model.setOperationName(RequestOperationName.DELETE.name());
+        userService.deleteUser(id);
+        model.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        return model;
     }
 
 }

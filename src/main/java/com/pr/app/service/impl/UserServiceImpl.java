@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = new UserDTO();
         UserEntity userEntity = userRepository.findByUserId(id);
         if (userEntity == null) {
-            throw new UsernameNotFoundException(id);
+            throw new UsernameNotFoundException("User with userId "+id+" not found");
         }
         BeanUtils.copyProperties(userEntity, userDTO);
         return userDTO;
@@ -80,6 +80,17 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(updatedUserDetails, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+
+        UserEntity userEntity = userRepository.findByUserId(userId);
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+        userRepository.delete(userEntity);
+
     }
 
     @Override
