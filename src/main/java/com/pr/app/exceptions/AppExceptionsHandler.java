@@ -13,16 +13,16 @@ import java.util.Date;
 @ControllerAdvice
 public class AppExceptionsHandler {
 
-    @ExceptionHandler(value = { UserServiceException.class })
-    public ResponseEntity<Object> handleUserServiceException(UserServiceException exception, WebRequest request){
+    @ExceptionHandler(value = {UserServiceException.class})
+    public ResponseEntity<Object> handleUserServiceException(UserServiceException exception, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(new Date(), exception.getMessage());
-        return new ResponseEntity<>(errorMessage,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(value = { Exception.class })
-    public ResponseEntity<Object> handleOtherException(Exception exception, WebRequest request){
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<Object> handleOtherException(Exception exception, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(new Date(), exception.getMessage());
-        return new ResponseEntity<>(errorMessage,new HttpHeaders(),HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
